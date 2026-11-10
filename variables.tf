@@ -13,11 +13,6 @@ variable "vm_name" {
   type        = string
 }
 
-variable "vm_size" {
-  description = "Azure VM size. Check its availability and cost in the selected subscription and region."
-  type        = string
-}
-
 variable "admin_username" {
   description = "Linux administrator username."
   type        = string

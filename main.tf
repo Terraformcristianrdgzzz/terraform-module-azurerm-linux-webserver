@@ -63,7 +63,7 @@ resource "azurerm_linux_virtual_machine" "webserver" {
   computer_name       = substr(var.vm_name, 0, 64)
   location            = var.location
   resource_group_name = var.resource_group_name
-  size                = var.vm_size
+  size                = "Standard_D2s_v7"
 
   admin_username                  = var.admin_username
   disable_password_authentication = true

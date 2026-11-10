@@ -2,6 +2,8 @@
 
 A reusable Terraform module that creates an Ubuntu Linux VM in an existing Azure subnet, assigns it a public IP address, attaches an NSG, and installs Apache with a simple "Hello from Terraform!" page.
 
+The VM size is fixed to `Standard_D2s_v7`. Confirm its availability and cost in the target Azure region and subscription before deployment.
+
 The module does not create a resource group, virtual network, or subnet, and it does not configure a Terraform backend or Azure RBAC roles. The calling configuration is responsible for those concerns.
 
 ## Architecture
@@ -50,7 +52,6 @@ module "webserver" {
   resource_group_name  = "rg-terraformdeployments-stage"
   location             = "East US"
   vm_name              = "vm-web-stage"
-  vm_size              = "Standard_B1s"
   admin_username       = "azureuser"
   admin_ssh_public_key = file("C:/Users/YOUR_USER/.ssh/id_rsa.pub")
   subnet_id            = module.network.subnet_id
@@ -73,7 +74,6 @@ Replace the example username, SSH public key path, address ranges, names, and VM
 | `resource_group_name` | Name of the existing resource group for the web server resources. | `string` | yes |
 | `location` | Azure region for the resources. | `string` | yes |
 | `vm_name` | VM name and prefix for related resource names. | `string` | yes |
-| `vm_size` | Azure VM size. Confirm availability and cost for the subscription and region. | `string` | yes |
 | `admin_username` | Linux administrator username. | `string` | yes |
 | `admin_ssh_public_key` | SSH public key for the VM administrator. | `string` | yes |
 | `subnet_id` | ID of the existing subnet for the VM network interface. | `string` | yes |
