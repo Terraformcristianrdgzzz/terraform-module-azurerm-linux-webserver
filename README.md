@@ -34,7 +34,7 @@ This module is intended to be composed with the network module. The `v0.1.0` ref
 
 ```hcl
 module "network" {
-  source = "git::https://github.com/cristianrdgzzz/terraform-module-azurerm-network.git?ref=v0.1.0"
+  source = "git::https://github.com/Terraformcristianrdgzzz/terraform-module-azurerm-network.git?ref=v0.1.0"
 
   resource_group_name = "rg-terraformdeployments-stage"
   location            = "East US"
@@ -45,7 +45,7 @@ module "network" {
 }
 
 module "webserver" {
-  source = "git::https://github.com/cristianrdgzzz/terraform-module-azurerm-linux-webserver.git?ref=v0.1.0"
+  source = "git::https://github.com/Terraformcristianrdgzzz/terraform-module-azurerm-linux-webserver.git?ref=v0.1.0"
 
   resource_group_name  = "rg-terraformdeployments-stage"
   location             = "East US"
