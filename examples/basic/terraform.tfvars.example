@@ -1,0 +1,8 @@
+resource_group_name       = "rg-terraform-demo"
+location                  = "East US"
+vm_name                   = "vm-web-demo"
+admin_username            = "azureuser"
+admin_ssh_public_key      = "ssh-ed25519 REPLACE_WITH_YOUR_PUBLIC_KEY azure-webserver"
+subnet_id                 = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-terraform-demo/providers/Microsoft.Network/virtualNetworks/vnet-demo/subnets/snet-web"
+ssh_source_address_prefix = null
+os_disk_size_gb           = 30
