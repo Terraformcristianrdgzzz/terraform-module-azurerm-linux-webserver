@@ -3,12 +3,29 @@ mock_provider "azurerm" {
     defaults = {
       id         = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Network/publicIPAddresses/vm-test-pip"
       ip_address = "198.51.100.10"
+      sku        = "Standard"
     }
   }
 
   mock_resource "azurerm_network_security_group" {
     defaults = {
       id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Network/networkSecurityGroups/vm-test-nsg"
+      security_rule = [{
+        name                         = "Allow-HTTP"
+        direction                    = "Inbound"
+        access                       = "Allow"
+        protocol                     = "Tcp"
+        destination_port_range       = "80"
+        source_address_prefix        = "Internet"
+        source_port_range            = "*"
+        destination_address_prefix   = "*"
+        description                  = null
+        destination_port_ranges      = []
+        source_port_ranges           = []
+        source_address_prefixes      = []
+        destination_address_prefixes = []
+        priority                     = 100
+      }]
     }
   }
 
@@ -33,7 +50,9 @@ mock_provider "azurerm" {
 
   mock_resource "azurerm_linux_virtual_machine" {
     defaults = {
-      id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Compute/virtualMachines/vm-test"
+      id                              = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.Compute/virtualMachines/vm-test"
+      size                            = "Standard_D2s_v7"
+      disable_password_authentication = true
     }
   }
 }
