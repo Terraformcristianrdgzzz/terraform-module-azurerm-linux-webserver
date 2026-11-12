@@ -32,11 +32,11 @@ The calling root configuration must configure the AzureRM provider, authenticati
 
 ## Usage
 
-This module is intended to be composed with the network module. Both `v0.1.0` references below are published tags.
+This module is intended to be composed with the network module. Both `v0.2.0` references below are published tags.
 
 ```hcl
 module "network" {
-  source = "git::https://github.com/Terraformcristianrdgzzz/terraform-module-azurerm-network.git?ref=v0.1.0"
+  source = "git::https://github.com/Terraformcristianrdgzzz/terraform-module-azurerm-network.git?ref=v0.2.0"
 
   resource_group_name = "rg-terraformdeployments-stage"
   location            = "East US"
@@ -47,7 +47,7 @@ module "network" {
 }
 
 module "webserver" {
-  source = "git::https://github.com/Terraformcristianrdgzzz/terraform-module-azurerm-linux-webserver.git?ref=v0.1.0"
+  source = "git::https://github.com/Terraformcristianrdgzzz/terraform-module-azurerm-linux-webserver.git?ref=v0.2.0"
 
   resource_group_name  = "rg-terraformdeployments-stage"
   location             = "East US"
@@ -71,6 +71,7 @@ Replace the example username, SSH public key path, address ranges, names, and VM
 
 - [`examples/basic`](./examples/basic) shows how to call this module using an existing subnet. Its README explains how to plan it against Azure.
 - [`tests/webserver.tftest.hcl`](./tests/webserver.tftest.hcl) checks outputs, SSH's closed-by-default behavior, and SSH CIDR validation using a mocked AzureRM provider. Tests do not create Azure resources.
+- Resource lifecycle preconditions and postconditions check VM network security association, HTTP access, public IP allocation, VM size, and disabled password authentication.
 
 Run the unit tests with Terraform 1.7.0 or later:
 
