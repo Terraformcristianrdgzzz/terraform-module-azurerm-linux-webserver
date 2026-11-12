@@ -4,6 +4,13 @@ resource "azurerm_public_ip" "webserver" {
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
   sku                 = "Standard"
+
+  lifecycle {
+    postcondition {
+      condition     = self.sku == "Standard" && self.ip_address != ""
+      error_message = "Azure must assign a public IPv4 address using the Standard SKU."
+    }
+  }
 }
 
 resource "azurerm_network_security_group" "webserver" {
@@ -22,6 +29,21 @@ resource "azurerm_network_security_group" "webserver" {
     source_address_prefix      = "Internet"
     destination_address_prefix = "*"
   }
+
+  lifecycle {
+    postcondition {
+      condition = anytrue([
+        for rule in self.security_rule :
+        rule.name == "Allow-HTTP" &&
+        rule.direction == "Inbound" &&
+        rule.access == "Allow" &&
+        rule.protocol == "Tcp" &&
+        rule.destination_port_range == "80" &&
+        rule.source_address_prefix == "Internet"
+      ])
+      error_message = "The network security group must allow inbound HTTP from the Internet."
+    }
+  }
 }
 
 resource "azurerm_network_security_rule" "ssh" {
@@ -38,6 +60,13 @@ resource "azurerm_network_security_rule" "ssh" {
   destination_address_prefix  = "*"
   resource_group_name         = var.resource_group_name
   network_security_group_name = azurerm_network_security_group.webserver.name
+
+  lifecycle {
+    postcondition {
+      condition     = self.source_address_prefix == var.ssh_source_address_prefix && self.destination_port_range == "22"
+      error_message = "The SSH rule must only allow port 22 from the explicitly configured trusted CIDR."
+    }
+  }
 }
 
 resource "azurerm_network_interface" "webserver" {
@@ -50,6 +79,13 @@ resource "azurerm_network_interface" "webserver" {
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.webserver.id
+  }
+
+  lifecycle {
+    postcondition {
+      condition     = self.private_ip_address != ""
+      error_message = "Azure must assign a private IP address to the network interface."
+    }
   }
 }
 
@@ -75,6 +111,21 @@ resource "azurerm_linux_virtual_machine" "webserver" {
   admin_ssh_key {
     username   = var.admin_username
     public_key = var.admin_ssh_public_key
+  }
+
+  lifecycle {
+    precondition {
+      condition = (
+        azurerm_network_interface_security_group_association.webserver.network_interface_id == azurerm_network_interface.webserver.id &&
+        azurerm_network_interface_security_group_association.webserver.network_security_group_id == azurerm_network_security_group.webserver.id
+      )
+      error_message = "The VM's network interface must be associated with the module's network security group."
+    }
+
+    postcondition {
+      condition     = self.size == "Standard_D2s_v7" && self.disable_password_authentication
+      error_message = "The VM must use Standard_D2s_v7 and password authentication must remain disabled."
+    }
   }
 
   os_disk {
