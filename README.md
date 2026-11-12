@@ -32,7 +32,7 @@ The calling root configuration must configure the AzureRM provider, authenticati
 
 ## Usage
 
-This module is intended to be composed with the network module. The `v0.1.0` references below are examples; create and verify those tags before using them.
+This module is intended to be composed with the network module. Both `v0.1.0` references below are published tags.
 
 ```hcl
 module "network" {
@@ -66,6 +66,20 @@ output "website_url" {
 ```
 
 Replace the example username, SSH public key path, address ranges, names, and VM size with values appropriate for your environment. The module needs only the public key; never provide or commit a private key.
+
+## Examples and tests
+
+- [`examples/basic`](./examples/basic) shows how to call this module using an existing subnet. Its README explains how to plan it against Azure.
+- [`tests/webserver.tftest.hcl`](./tests/webserver.tftest.hcl) checks outputs, SSH's closed-by-default behavior, and SSH CIDR validation using a mocked AzureRM provider. Tests do not create Azure resources.
+
+Run the unit tests with Terraform 1.7.0 or later:
+
+```shell
+terraform init -backend=false
+terraform test
+```
+
+Terraform's mocked-provider test support requires 1.7.0 or later. The module itself remains compatible with Terraform 1.5.0 and later.
 
 ## Inputs
 
